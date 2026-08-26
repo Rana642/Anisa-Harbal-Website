@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anisa Herbal
 
-## Getting Started
+Storefront for Anisa Herbal Miracle Hair Oil.
 
-First, run the development server:
+**Read [KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md) before changing copy, colours or
+prices.** It is the source of truth for the brand: the locked palette, the
+approved product claims, and the bundle price table. `src/lib/brand.ts` mirrors
+it in code — if one changes, change both.
+
+## Running it
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build   # production build
+npx eslint .    # lint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+Next.js 16 (App Router, Turbopack) · React 19 · Tailwind v4 · TypeScript.
+Tailwind v4 is CSS-first — the brand tokens are defined in `@theme` inside
+`src/app/globals.css`, not in a `tailwind.config.js`.
 
-To learn more about Next.js, take a look at the following resources:
+## Configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Copy `.env.example` to `.env.local` and fill in what you have. Everything is
+optional; with nothing set the site runs, but it will not track conversions and
+orders are only written to a local development log.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Placeholder contact details live in `src/lib/config.ts` — phone, WhatsApp and
+email all need replacing before launch, or every WhatsApp button is dead.
 
-## Deploy on Vercel
+## How orders work
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Cash on Delivery only. The checkout collects name, phone, address and city, then
+POSTs to `/api/orders`, which:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. validates the details server-side,
+2. **recomputes the total from the published price table** — the browser only
+   sends sizes and quantities, never a price,
+3. persists the order (to `ORDER_WEBHOOK_URL`, or `.orders/orders.jsonl` in
+   development),
+4. sends a Purchase event to Meta's Conversions API sharing an `event_id` with
+   the browser Pixel so the two deduplicate.
+
+Medusa.js is the intended commerce engine; the API route is a stopgap until it
+is in place.
+
+## Conventions worth knowing
+
+- **No decorative emojis or icon clutter.** Herbal-green ✓ marks are part of the
+  brand's actual visual language; random icons are not.
+- **No invented colours.** Only the eight tokens in `globals.css`.
+- **No overclaiming.** Specific claims may only be made about the seven named
+  oils; "20+ herbs" stays an umbrella statement. No timelines, no cures.
+- **No fabricated reviews.** `src/lib/reviews.ts` is empty and the reviews
+  section renders nothing until real ones exist.
