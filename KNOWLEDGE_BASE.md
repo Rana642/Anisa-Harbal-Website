@@ -24,8 +24,10 @@ anisa Harbal/
 │   │                            no1-hair-growth-oil-checklist  ← see §11 warning
 │   ├── color-palette/           anisa_herbal_color_palette.pdf
 │   ├── pricing-reference/       100ml- and 150ml-multi-bottle-savings.pdf
+│   ├── hero-slider/              8 client Meta-ad-style banners, see §10
 │   └── placeholders-needed/     generated stand-ins until real photos exist
 ├── public/images/             ← web-ready copies used by the site
+│   └── hero/                    the same 8 hero-slider banners
 └── src/                       ← app, components, lib (see §11)
 ```
 
@@ -384,6 +386,43 @@ Organization JSON-LD, which is what links the profiles to the brand in search.
 4. **Policy blanks.** Delivery times, charges, return window and the registered
    business name show as highlighted placeholders. They need real values and a
    legal read.
+
+### Hero slider (added 29 Aug 2026)
+
+The homepage hero is client-supplied Meta-ad-style banner creative, no text or
+CTA layered on top per the client's instruction — and mobile and desktop are
+genuinely different experiences, not one asset set hidden/shown by CSS:
+
+- **Mobile** (`src/components/sections/mobile-hero.tsx`): the one purpose-built
+  portrait crop, static, full-bleed, linking to the PDP. No carousel.
+- **Desktop/tablet** (`src/components/sections/desktop-hero-slider.tsx`): the
+  other 7 landscape banners in an autoplay carousel with swipe/dot/arrow
+  controls, shown uncropped (`object-contain`) so none of their baked-in
+  headline text is ever lost.
+
+`src/components/sections/hero.tsx` is an **async Server Component** that reads
+the request's `User-Agent` (`src/lib/ua.ts`) and renders only the matching one
+— **this is deliberate, not an accident of the split.** An earlier CSS-only
+version (`sm:hidden` / `hidden sm:block`, both always in the DOM) leaked images
+across devices: Next's `priority` prop preloads via `<link rel="preload">`
+regardless of `display:none`, and even without `priority`, absolutely-positioned
+images sitting in the same box as a visible slide got fetched too. Verified
+with curl using a real Android UA string, and against a live Chrome-emulated
+mobile tab with a clean network trace — server HTML contains only the matching
+device's `<img>` tags, zero cross-loading either direction.
+
+**Trade-off, on purpose:** `headers()` makes `/` a dynamic route (`ƒ` in the
+build output, was `○` static before this). The homepage is no longer served
+from static/edge cache — every request re-renders on the server. Acceptable
+for this project's Phase 1 traffic; revisit with UA-sniffing Next.js
+Middleware (rewrite to two statically-generated variants) if traffic or
+hosting cost ever makes that matter.
+
+**Flag for the client:** 7 of these 8 banners use a maroon/burgundy headline
+colour (roughly `#7a1f2b`) that is not in the locked palette in §2. They are
+being shown as supplied rather than redesigned. If the client wants strict
+palette compliance, these need to be re-exported in Rich Black or Antique Gold
+text instead of maroon.
 
 ### Two ad graphics are deliberately not used on the site
 `no1-hair-growth-oil-checklist.png` claims "NO.1 HAIR GROWTH OIL" — an
