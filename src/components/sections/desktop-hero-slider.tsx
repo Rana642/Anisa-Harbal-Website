@@ -68,7 +68,7 @@ export function DesktopHeroSlider() {
       onBlurCapture={() => setPaused(false)}
     >
       <div
-        className="relative aspect-[12/5] max-h-[720px] overflow-hidden"
+        className="relative aspect-[12/5] w-full overflow-hidden"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
