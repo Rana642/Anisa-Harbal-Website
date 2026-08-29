@@ -13,11 +13,11 @@ export function Benefits() {
 
         <ul className="mt-14 grid gap-px overflow-hidden rounded-lg bg-champagne sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map((benefit, i) => (
-            <li key={benefit} className="bg-ivory p-8">
-              <span className="font-display text-sm italic text-gold-deep tabular-nums">
+            <li key={benefit} className="flex items-baseline gap-3 bg-ivory p-6 sm:p-8">
+              <span className="shrink-0 font-display text-sm italic text-gold-deep tabular-nums">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <p className="mt-4 text-[0.95rem] leading-relaxed text-ink/85">
+              <p className="text-[0.95rem] leading-relaxed text-ink/85">
                 {benefit}
               </p>
             </li>
