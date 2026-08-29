@@ -68,7 +68,7 @@ export function DesktopHeroSlider() {
       onBlurCapture={() => setPaused(false)}
     >
       <div
-        className="relative h-[400px] overflow-hidden lg:h-[520px]"
+        className="relative aspect-[12/5] max-h-[720px] overflow-hidden"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -91,7 +91,7 @@ export function DesktopHeroSlider() {
                   fill
                   priority={i === 0}
                   sizes="100vw"
-                  className="object-contain"
+                  className={`object-cover ${slide.objectPosition ?? "object-center"}`}
                 />
               </Link>
             )}

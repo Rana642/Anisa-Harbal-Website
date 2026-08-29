@@ -2,6 +2,13 @@ export type HeroSlide = {
   id: string;
   src: string;
   alt: string;
+  /**
+   * Tailwind `object-*` utility for the full-bleed crop. Defaults to
+   * "object-center" when omitted. Every banner but the first is native
+   * 2.4:1, matching the slider box almost exactly, so cropping is
+   * negligible there; only the 16:9 first slide needs a deliberate bias.
+   */
+  objectPosition?: string;
 };
 
 /**
@@ -26,6 +33,11 @@ export const HERO_SLIDES: readonly HeroSlide[] = [
     id: "intro-40-off",
     src: "/images/hero/hero-40-off-desktop.jpg",
     alt: "Anisa Herbal Miracle Hair Oil — 40% off, infused with 20+ herbs",
+    // Native 16:9 in a 2.4:1 box crops ~117px off top and bottom at full
+    // scale. Biasing to the top keeps the badge, bottle and headline whole
+    // and only trims the "Shop Now" button — acceptable since the whole
+    // banner already links to the PDP.
+    objectPosition: "object-top",
   },
   {
     id: "150ml",
